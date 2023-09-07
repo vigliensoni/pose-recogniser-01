@@ -11,6 +11,10 @@
     // the link to your model provided by Teachable Machine export panel
     const URL = "./my_model/";
     let model, webcam, ctx, labelContainer, maxPredictions;
+    let leftMargin = 0;
+
+    const canvas = document.getElementById("canvas");
+    canvas.style="position:absolute;"
 
     async function init() {
         const modelURL = URL + "model.json";
@@ -31,8 +35,9 @@
         window.requestAnimationFrame(loop);
 
         // append/get elements to the DOM
-        const canvas = document.getElementById("canvas");
+        
         canvas.width = size; canvas.height = size;
+        
         ctx = canvas.getContext("2d");
         labelContainer = document.getElementById("label-container");
         for (let i = 0; i < maxPredictions; i++) { // and class labels
@@ -55,6 +60,7 @@
 
         let maxIndex = 0;
         let maxValue = 0;
+        
         for (let i = 0; i < maxPredictions; i++) {
             const classPrediction =
                 prediction[i].className + ": " + prediction[i].probability.toFixed(2);
@@ -66,13 +72,20 @@
             }
         }
 
-        // console.log(maxIndex);
+        
         if ( maxIndex == 0 ) body.style = "background:rgb(243, 147, 29)";
         else if ( maxIndex == 1 ) body.style = "background:rgb(103, 156, 180)";
         else if ( maxIndex == 2 ) body.style = "background:rgb(255, 255, 255)";
         else if ( maxIndex == 3 ) body.style = "background:rgb(231, 79, 47)";
         else body.style = "background:rgb(0, 1, 4)"; // in case of a fifth class
 
+        if ( maxIndex == 0 ) {
+            leftMargin -= 1
+        } else if ( maxIndex == 1 ) {
+            leftMargin += 1
+        } 
+
+        canvas.style.left = 10*leftMargin + "px";
 
         drawPose(pose);
     }
